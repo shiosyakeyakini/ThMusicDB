@@ -4,8 +4,12 @@
 
 # 環境
 SQLiteで構築しました。
+
+
 JavaScriptでのSQLite実装系であるSQL.js ( https://github.com/kripken/sql.js/ ) を用いて、
 簡易なSQLクエリ実行系も実装してみました。ブラウザ内で処理が完結します(INSERTしようが保存されません。)
+
+
 実際のデータベースって扱う機会がそんなに無い気もするので、SQLの練習にでもどうぞ。
 
 デモ -> https://shiosyakeyakini.github.io/
