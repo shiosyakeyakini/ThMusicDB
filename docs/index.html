@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <title>東方原曲データベース</title>
+        <script type="text/javascript" src="js/sql.js"></script>
+        <script type="text/javascript">
+            window.addEventListener("DOMContentLoaded", function(){
+                var xhr = new XMLHttpRequest() ;
+                xhr.open("GET", "ThMusicDB", true)
+                xhr.responseType = "arraybuffer" ;
+                xhr.onload = function(e){
+                    var uInt8Array = new Uint8Array(this.response) ;
+                    var db = new SQL.Database(uInt8Array) ;
+                    document.getElementById("run").addEventListener("click", function(){
+                        try{
+                            var contents = db.exec(document.getElementById("Query").value) ;
+                        }catch(e){
+                            document.getElementById("result").innerHTML = e.message
+                        }
+                        if(!contents[0]){
+                            document.getElementById("result").innerHTML = "見つかりませんでした。" ;
+                            return 0;
+                        }
+
+                        var retstr = ["<table><tr>"]
+
+                        for(var i=0,len=contents[0].columns.length;i<len;i++)
+                            retstr[retstr.length] = "<th>" + contents[0].columns[i] + "</th>"
+                        retstr[retstr.length] = "</tr>"
+
+                        for(var i=0,len2=contents[0].values.length;i<len2;i++){
+                            retstr[retstr.length] = "<tr>"
+                            for(var j=0;j<len;j++)
+                                retstr[retstr.length] = "<td>" + contents[0].values[i][j] + "</td>"
+                            retstr[retstr.length] = "</tr>"
+                        }
+                        retstr[retstr.length] = "</table>"
+                        console.log(retstr)
+                        document.getElementById("result").innerHTML = retstr.join("")
+
+                    }, false)
+                }
+                xhr.send() ;
+            })
+        </script>
+        <style type="text/css">
+            textarea{
+                width : 100% ;
+                height : 10em ;
+            }
+            table, td, th{
+                border-collapse : collapse ;
+                border-spacing : 0 ;
+                padding : 3px ;
+                font-size : small ;
+            }
+            th{
+                background-color : #29beef ;
+                color : #000 ;
+            }
+            td, th{
+                border : solid 1px #000 ;
+            }
+            img{
+                float : left ;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>東方Project 原曲データベース</h1>
+        <p>東方Projectの原曲を、JavaScriptで実装されたSQLiteエンジンを用いて検索できるようにしたシステムです。
+            データベースのファイルの著作権は放棄します。</p>
+        <p>実行するクエリ：</p>
+        <textarea id="Query"></textarea>
+        <input type="button" id="run" value="クエリ発行">
+        <p>結果</p>
+        <div id="result"></div>
+
+        <hr>
+        <h2>解説</h2>
+        <p>東方Projectの原曲をデータベース化して、気軽にSQLで検索できるようにしたものです。</p>
+        <p>このデータベースは以下のようなE-R図になっています。</p>
+        <img src="ER.png" alt="E-R図">
+        <p>超シンプルです。超シンプルですが、いろいろと不具合はあります(ぉ</p>
+
+
+    </body>
+</html>
